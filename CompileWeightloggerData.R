@@ -21,7 +21,7 @@ library(plotly)
 # ******************************************************* #
 #### READ DATA ####
 
-path = paste(macdir, "research/seabird/Weights/data/", sep = "")
+path = paste(macdir, "research/seabird/WeightLoggerGuillemots/data/", sep = "")
 allfiles = list.files(path)
 
 df = data.frame()
@@ -52,6 +52,10 @@ rollmin_spangaps = approx(rollmin, xout = 1:length(rollmin), method = "constant"
 df$rollmin = rollmin_spangaps
 
 
+# Calibrated data 
+df$Far3c = df$Far3 - df$rollmin
+
+
 
 # Weight events
 datx = df[!is.na(df$Far3c),]
@@ -62,6 +66,8 @@ event = diff(birdon); event[event == -1] <- 0; event[is.na(event)] <- 0
 eventnum = cumsum(event)
 eventnum[birdon == 0] <- NA
 datx$event = eventnum
+
+
 
 # Stats for each each weight event 
 s1 = aggregate(cbind(DateTime, Far3c) ~ event, data = datx, FUN = max); s1$wmax = s1$Far3c
